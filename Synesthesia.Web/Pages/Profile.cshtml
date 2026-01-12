@@ -1,0 +1,231 @@
+﻿@page
+@model Synesthesia.Web.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .profile-container {
+        flex: 1;
+        padding: 40px;
+        color: white;
+        text-shadow: 0 0 12px rgba(0,0,0,0.7);
+    }
+
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.7);
+        margin-bottom: 20px;
+        box-shadow: 0 0 22px rgba(0,0,0,0.6);
+    }
+
+    .username {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .bio {
+        margin-top: 15px;
+        font-size: 1.2rem;
+        max-width: 600px;
+    }
+
+    .edit-btn {
+        margin-top: 15px;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        color: white;
+        padding: 10px;
+        border-radius: 80px;
+        transition: 0.3s;
+        font-size: 1.1rem;
+        text-decoration: none !important;
+        display: inline-block;
+    }
+
+    .edit-btn:hover {
+        background: rgba(255,255,255,0.4);
+        color: #16003B;
+    }
+
+    .audio-history {
+        margin-top: 40px;
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .audio-history h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .audio-item {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        transition: 0.3s;
+    }
+
+    .audio-item:hover {
+        background: rgba(255,255,255,0.25);
+    }
+
+    .audio-info {
+        flex: 1;
+    }
+
+    .audio-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .audio-date {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .audio-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-play {
+        background: rgba(0, 255, 120, 0.25);
+        border: 2px solid rgba(0, 255, 120, 0.5);
+        color: #eaffea;
+        padding: 8px 20px;
+        border-radius: 80px;
+        transition: 0.3s;
+        text-decoration: none !important;
+        font-size: 1rem;
+    }
+
+    .btn-play:hover {
+        background: rgba(0, 255, 120, 0.45);
+        color: #102b12;
+    }
+
+    .btn-delete {
+        background: rgba(255, 50, 50, 0.25);
+        border: 2px solid rgba(255, 50, 50, 0.5);
+        color: #ffeeee;
+        padding: 8px 20px;
+        border-radius: 80px;
+        transition: 0.3s;
+        font-size: 1rem;
+    }
+
+    .btn-delete:hover {
+        background: rgba(255, 50, 50, 0.45);
+        color: #2b1010;
+    }
+
+    .no-audio {
+        text-align: center;
+        padding: 40px;
+        opacity: 0.7;
+        font-size: 1.1rem;
+    }
+
+    .debug-info {
+        background: rgba(255, 255, 0, 0.2);
+        border: 2px solid rgba(255, 255, 0, 0.5);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="synesthesia-gradient profile-container">
+
+    <img src="@(Url.Content(Model.ProfilePicture ?? "~/images/default_profile_white.png"))"
+         alt="Profile Picture"
+         class="profile-img" />
+
+    <div class="username">@Model.Username</div>
+
+    <div class="bio">
+        @(!string.IsNullOrWhiteSpace(Model.Bio) ? Model.Bio : "No bio set yet.")
+    </div>
+
+    <a class="edit-btn"
+       asp-area="Identity"
+       asp-page="/Account/Manage/Index">
+        Edit Profile
+    </a>
+
+    <div class="audio-history">
+        <h2>Saved Projects (@Model.Projects.Count)</h2>
+
+
+        @if (Model.Projects.Count > 0)
+        {
+            @foreach (var p in Model.Projects)
+            {
+                <div class="audio-item">
+                    <div class="audio-info">
+                        <div class="audio-name">@p.Title</div>
+                        <div class="audio-date">
+                            Audio: @(p.AudioFile?.FileName ?? "Unknown") · Saved: @(p.CreatedAt?.ToString("MMM dd, yyyy") ?? "Unknown date")
+                        </div>
+                    </div>
+
+                    <div class="audio-actions">
+                        <a class="btn-play" asp-page="/Studio" asp-route-projectId="@p.Id">
+                            Play
+                        </a>
+                    </div>
+
+                    <form method="post" asp-page-handler="DeleteProject" style="display:inline;">
+                        <input type="hidden" name="projectId" value="@p.Id" />
+                        <button type="submit" class="btn-delete"
+                                onclick="return confirm('Delete this project and its audio file?');">
+                            Delete
+                        </button>
+                    </form>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-audio">
+                No saved projects yet. Save one from the Studio first!
+            </div>
+        }
+
+    </div>
+
+</div>

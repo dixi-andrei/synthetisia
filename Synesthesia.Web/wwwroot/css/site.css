@@ -1,0 +1,60 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.synesthesia-gradient {
+    flex: 1; /* fills main */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 0 0 15px rgba(0,0,0,0.8);
+    background: linear-gradient(120deg, #16003B, #713ABE, #f272e4, #4ec1de);
+    background-size: 300% 300%;
+    animation: gradientMove 15s ease infinite;
+    text-align: center;
+}
+
+.synesthesia-gradient-top-left {
+    flex: 1; /* fills main */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+    text-shadow: 0 0 15px rgba(0,0,0,0.8);
+    background: linear-gradient(120deg, #16003B, #713ABE, #f272e4, #4ec1de);
+    background-size: 300% 300%;
+    animation: gradientMove 15s ease infinite;
+    text-align: left;
+    padding-left:3vw;
+    padding-right:3vw;
+    padding-top: 2vh;
+    padding-bottom:5vh;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
